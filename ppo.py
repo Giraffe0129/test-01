@@ -1,9 +1,28 @@
+#agent.py：自定义`MahjongGBAgent` 基类，按顺序处理玩家在麻将游戏中观察到的事件，并在每个决策点提取状态特征。同时将网络输出的动作转化为游戏事件。
+
+#+ feature.py：自定义`FeatureAgent` 类，继承自 `MahjongGBAgent`，根据麻将规则处理每个决策点的所有可执行动作，并生成相应的特征表示。
+
+#+ model.py：包含强化学习策略网络、随机策略以及其他可能用于训练和评估的模型。
+
+#+ env.py：自定义环境类`MahjongGBEnv`，继承自 `gym.Env`。该类模拟麻将游戏环境，管理智能体与游戏环境之间的交互，包括状态转换和奖励计算，
+#另外有稠密奖励环境类`MahjongGBEnv_Dense_Reward`与打印对局信息（便于调试）的环境类`MahjongGBEnv_Print`。
+
+#+ ppo.py：近端策略优化（PPO）算法实现。
+
+#+ replay_buffer.py：优先经验回放算法实现。
+
+#+ train_ppo_expert_opponents.py：主要脚本，使用近端策略优化（PPO）算法，通过单一智能体对抗专家策略的方式训练强化学习智能体，对手策略为专家策略。
+
+# \_\_main\_\_.py：该脚本用于与 Botzone 平台交互。它处理 Botzone 的输入，通过 `Agent` 类将其转化为状态特征，并将这些特征输入模型以获取动作，
+#再将这些动作格式化为 Botzone 兼容的输出格式。不建议修改此文件；然而，可以通过阅读代码来更好地理解 `Agent` 类的接口以及它与 Botzone 的集成方式。
+
+
 import torch
 import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 import numpy as np
 from env import MahjongGBEnv
-from feature import FeatureAgent
+from feature import FeatureAgent #根据麻将规则处理每个决策点的所有可执行动作，并生成相应的特征表示
 from model import ResnetModel
 from torch import nn
 from collections import defaultdict
