@@ -76,6 +76,23 @@ def compute_gae(rewards, values, dones, gamma=0.99, lam=0.95):
 
 
 # PPO 更新过程
+#policy_network：
+#策略网络，用于根据输入状态生成动作概率xi的分布。指的是依据当前可能执行的步骤，给出执行每个步骤的概率
+
+#optimizer：
+# 通过 optimizer.zero_grad() 方法将之前计算得到的梯度清零，防止梯度累积影响本次更新
+#接着使用 loss.backward() 计算当前损失函数关于网络参数的梯度
+#最后调用 optimizer.step() 根据计算得到的梯度来更新策略网络的参数
+
+#old_log_probs：
+#更新过程中，将xi取对数，得到lnxi1（旧）
+
+#ratio：
+#log_prob将得到lnxi2（新），torch.exp(log_prob - old_log_prob_batch)
+# 最终结果：ratio=xi（新）/xi（旧）
+#clip_param：使用torch.clamp(ratio, 1 - clip_param, 1 + clip_param)
+#函数将ratio限制在[1 - clip_param, 1 + clip_param]
+
 def ppo_update(policy_network, optimizer, old_log_probs, states, actions, returns, advantages, action_masks,
                clip_param):
     returns = returns.detach()
